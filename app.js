@@ -1,33 +1,42 @@
 // Define Dependencies
 const express = require('express');
 const bodyParser = require('body-parser');
-const logger = require('morgan');
-const mongoose = require('mongoose');
+require('dotenv').config();
+global.Env = process.env;
 
 // Content
 const app = express();
+const cors = require('cors');
+app.use(cors());
+
+/** Set up bodyparser */
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // Import file routes config ./app/routes/*
-const projects = require('./app/Routes/projects.route');
+// const projects = require('./app/Routes/projects.route');
+
+//Config directory controller
+const controllers = require(__dirname + '/app/controllers');
+app.use(controllers);
+
+//server
+const http = require('http').Server(app);
 
 // Connect to DB
-mongoose.connect(
-    'mongodb+srv://admin:admin@rest-ytb-1ufyf.mongodb.net/test?retryWrites=true&w=majority',
-    {
-        useNewUrlParser: true,
-    }
-)
 
 // Middleware
 /** Set up morgan */
-app.use(logger('dev'));
+// app.use(logger('dev'));
 
-/** Set up bodyparser */
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
 //Set up Routes
-app.use('/projects',projects);
+// app.use('/projects',projects);
+
+http.listen(Env.PORT, () => {
+    console.log(`Server run at port: ${Env.PORT}`);
+});
+
 
 // Cast 404 Errors and forward them to error handler
 app.use((req, res, next) => {
