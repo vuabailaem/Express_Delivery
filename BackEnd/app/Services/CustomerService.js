@@ -11,12 +11,13 @@ class CustomerService {
             if(!result) {
                 return {
                     success: false,
-                    data: undefined
+                    data: undefined,
                 }
             }
             return {
                 success: true,
-                data: result
+                data: result,
+                time: new Date().getTime()
             }
         } catch (e) {
             console.log(e);
@@ -85,7 +86,6 @@ class CustomerService {
             throw(e);
         }
     }
-
 
 }
 
