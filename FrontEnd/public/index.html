@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+    
+    <script>
+      function initMap() {
+        window.directionsService = new window.google.maps.DirectionsService();
+        window.directionsRenderer = new window.google.maps.DirectionsRenderer();
+        var map = new window.google.maps.Map(document.getElementById('map'), {
+          zoom: 13,
+          center: {lat: 16.054407, lng: 108.202167}
+        });
+        window.directionsRenderer.setMap(map);
+      }
+
+      window.codeAddress = function() {
+        var address = $("#start").val();
+        if (address != ''){
+          return $.ajax({
+            url: "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key=AIzaSyC58Pa1xnAA7rcKkgAcwX28G0-gyWLpryU&libraries=places",
+            method: 'get',
+            success: function(res) {
+              if (res.status == 'OK') {
+                var location = res.results[0].geometry.location;
+                $("#gg-lat").val(location.lat);
+                $("#gg-lng").val(location.lng);
+              } else {
+                // alert('Geocode was not successful for the following reason: ' + res.status);
+              }
+            }
+          });
+        } else {
+          // console.log("error");
+        }
+      }
+
+      window.calculateAndDisplayRoute = function() {
+        return new Promise(function (resolve) {
+          window.directionsService.route({
+          origin: document.getElementById('start').value,
+          destination: document.getElementById('end').value,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            window.directionsRenderer.setDirections(response);
+            var route = response.routes[0];
+            var summaryPanel = document.getElementById('directions-panel');
+            window.length = 0;
+            summaryPanel.innerHTML = '';
+            // For each route, display summary information.
+            for (var i = 0; i < route.legs.length; i++) {
+              var routeSegment = i + 1;
+              summaryPanel.innerHTML += '<b>Route: ' +
+                  '</b>';
+              summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+              summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+              summaryPanel.innerHTML += route.legs[i].distance.value/1000 + ' km';
+              window.length = (route.legs[i].distance.value/1000);
+            }
+          } else {
+            // window.alert('Directions request failed due to ' + status);
+          }
+          resolve({ response, status });
+        })
+      });
+      }
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC58Pa1xnAA7rcKkgAcwX28G0-gyWLpryU&libraries=places&callback=initMap"></script>
+  </body>
+</html>

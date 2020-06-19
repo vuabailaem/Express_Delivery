@@ -1,17 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const CustomerService = require('../../Services/CustomerService');
+const RequestService = require('../../Services/RequestsService');
+const AuthenMiddleware = require('../../Middlewares/AuthMiddleware');
+const NotificationService = require('../../Services/NotificationService');
+const jwt = require('jsonwebtoken');
 
-router.get('/getAll', (req, res, next) => {
-    CustomerService.getAll()
-    .then(result => {
-        res.json(result);
-    })
-    .catch(err => {
-        console.log(err);
-        res.json(err);
-    })
-});
 
 router.post('/add', (req, res, next) => {
     CustomerService.add(req.body)
@@ -24,8 +18,13 @@ router.post('/add', (req, res, next) => {
     })
 });
 
-router.delete('/:id', (req, res, next) => {
-    CustomerService.deleteById(req.params.id, req.body)
+router.use((req, res, next) => {
+    AuthenMiddleware.authCustomer({req, res, next});
+});
+
+router.get('/getMyData', (req, res, next) => {
+    const userId = req.customer.id;
+    CustomerService.getData(userId)
         .then(result => {
             res.json(result);
         })
@@ -35,8 +34,9 @@ router.delete('/:id', (req, res, next) => {
         })
 });
 
-router.put('/:id', (req, res, next) => {
-    CustomerService.updateById(req.params.id, req.body)
+router.get('/getMyRequests', (req, res, next) => {
+    const userId = req.customer.id;
+    CustomerService.getMyRequest(userId)
         .then(result => {
             res.json(result);
         })
@@ -44,6 +44,56 @@ router.put('/:id', (req, res, next) => {
             console.log(err);
             res.json(err);
         })
-})
+});
+
+
+router.put('/edit', (req, res, next) => {
+    const { headers } = req;
+    const token = headers.authorization;
+    const dataToken = jwt.verify(token, Env.APP_KEY);
+    const id = dataToken.id; 
+    CustomerService.updateById(id, req.body)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(err => {
+            console.log(err);
+            res.json(err);
+        })
+});
+
+router.get('/getMyNotification', (req, res, next) => {
+    CustomerService.getMyNotification(req.customer.id)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(err => {
+            console.log(err);
+            res.json(err);
+        })
+ });
+
+router.put('/confirmRequest', (req, res, next) => {
+    const body = req.body;
+    RequestService.confirmRequest(body.requestId, body.starsCount, body.commend)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(err => {
+            console.log(err);
+            res.json(err);
+        })
+});
+
+router.put('/checkedNotifications', (req, res, next) => {
+    CustomerService.checkedNotifications(req.customer.id)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(err => {
+            console.log(err);
+            res.json(err);
+        })
+});
 
 module.exports = router;

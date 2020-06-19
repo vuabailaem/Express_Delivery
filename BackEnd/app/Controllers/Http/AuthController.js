@@ -14,3 +14,19 @@ router.post('/login', (req, res, next) => {
             res.json(err);
         })
 });
+
+router.get('/getRole', (req, res, next) => {
+    const { headers } = req;
+    const token = headers.authorization;
+    AuthService.getRole(token)
+        .then(role => {
+            res.json(role);
+        })
+        .catch(err => {
+            console.log(err);
+            res.json(err);
+        })
+});
+
+
+module.exports = router;

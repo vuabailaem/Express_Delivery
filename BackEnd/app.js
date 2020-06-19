@@ -14,14 +14,14 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.post('/api/dangnhap', function(req, res) {
-    if(req.body.username == 'tuanlm' && req.body.password == '1234'){
-        const token = jwt.sign({ten: 'leminhtuan'},'tuanlm',{algorithm: 'HS256', expiresIn: '3h'})
-        res.json({access_token:token});
-    } else {
-        res.send('Dang nhap that bai');
-    }
-});
+// app.post('/api/dangnhap', function(req, res) {
+//     if(req.body.username == 'tuanlm' && req.body.password == '1234'){
+//         const token = jwt.sign({ten: 'leminhtuan'},'tuanlm',{algorithm: 'HS256', expiresIn: '3h'})
+//         res.json({access_token:token});
+//     } else {
+//         res.send('Dang nhap that bai');
+//     }
+// });
 
 // app.use(function(req, res, next) {
 //     const token = req.headers.authorization;
@@ -41,9 +41,9 @@ app.post('/api/dangnhap', function(req, res) {
 //     });
 // });
 
-app.get('/api/test', function(req, res) {
-    res.send('Day la api test.');    
-});
+// app.get('/api/test', function(req, res) {
+//     res.send('Day la api test.');    
+// });
 
 // Import file routes config ./app/routes/*
 // const projects = require('./app/Routes/projects.route');
@@ -64,6 +64,14 @@ const http = require('http').Server(app);
 
 //Set up Routes
 // app.use('/projects',projects);
+
+//socketIo
+const io = require('socket.io')(http, {
+    pingTimeout: 30000,
+    pingInterval: 60000
+});
+const Socket = require('./app/Controllers/WS/SocketController');
+Socket.SocketController(io);
 
 http.listen(Env.PORT, () => {
     console.log(`Server run at port: ${Env.PORT}`);
