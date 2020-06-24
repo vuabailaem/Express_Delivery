@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import api from '../api';
 import NavBar from '../components/NavBar';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 class main extends Component {
     constructor(props) {
@@ -79,6 +80,7 @@ class main extends Component {
         });
         if (response.data.success) {
           this.fetchShipperData();
+          NotificationManager.success('Delete shipper success.');
         } else {
           throw new Error();
         }
@@ -95,6 +97,7 @@ class main extends Component {
           },
         });
         if (response.data.success) {
+          NotificationManager.success('Delete customer success.');
           this.fetchCustomerData();
         } else {
           throw new Error();
@@ -153,6 +156,7 @@ class main extends Component {
             onHandleRequests = {this.onHandleRequests}
             onHandleLogout = {this.onHandleLogout}
           />
+          <NotificationContainer/>
             <div className="container">
             <div className="table-wrapper">
               <div className="table-title">

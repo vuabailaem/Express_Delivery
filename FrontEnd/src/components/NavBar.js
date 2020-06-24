@@ -25,10 +25,10 @@ const NavBar = (props) => {
                         <a className="nav-link cursor-pointer" onClick={props.onHandleRequests} >Request Management</a>
                     </li>
                     </ul>
-                    <form className="form-inline my-2 my-lg-0">
+                    {/* <form className="form-inline my-2 my-lg-0">
                         <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                         <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
+                    </form> */}
                 </> : 
                 (props.location.pathname.split('/').slice(0,2).join('') === "customer" ? 
                 <>
@@ -48,7 +48,7 @@ const NavBar = (props) => {
                         <Popover placement="bottom" isOpen={popoverOpen} target="Popover1" toggle={toggle}>
                         {(props.arrNotify || []).map((notify, index) => (
                             (notify.checked === 0
-                                ? <PopoverBody className="cursor-pointer" onClick={props.onHandleCheckNoti}>Request has id={notify.id} has done.</PopoverBody>
+                                ? <PopoverBody className="cursor-pointer" onClick={props.onHandleCheckNoti}>Request has id={notify.id} has done at {new Date(notify.created_at).toLocaleString()}.</PopoverBody>
                                 : ''
                             )
                         ))}

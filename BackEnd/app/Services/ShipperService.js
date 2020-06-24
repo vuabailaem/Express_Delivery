@@ -74,7 +74,7 @@ class ShipperService {
                 .update(
                     {
                         username: body.username,
-                        password: body.price,
+                        password: body.password,
                         firstname: body.firstname,
                         lastname: body.lastname,
                         phoneNumber: body.phoneNumber})
