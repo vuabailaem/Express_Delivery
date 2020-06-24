@@ -75,12 +75,17 @@ class CreateRequest extends Component {
     }
 
 
-    onHandleCheckNoti = async() => {
-        const response = api.put('/customer/checkedNotifications',{
-            headers: {
-                Authorization: localStorage.getItem('token'),
-            }
-        })
+    onHandleCheckNoti = async () => {
+        try {
+            const response = await api.put('/customer/checkedNotifications',1,{
+                headers: {
+                    Authorization: localStorage.getItem('token'),
+                },
+            });
+            this.props.history.push('/customer/request');
+        } catch {
+        console.log(Error);
+        }
     }
 
     onCloseModal = () => {

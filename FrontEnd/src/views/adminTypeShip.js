@@ -61,6 +61,7 @@ class adminTypeShip extends Component {
         const response = await api.delete('/typeShip/delete/' + id);
         if (response.data.success) {
           this.fetchTypeShipData();
+          NotificationManager.success('Delete type ship success.');
         } else {
           throw new Error();
         }

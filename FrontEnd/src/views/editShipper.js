@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import api from '../api';
 import NavBar from '../components/NavBar';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 class editShipper extends Component {
     constructor(props) {
@@ -8,7 +9,6 @@ class editShipper extends Component {
         this.state = {
             user: null,
             isLoading: true,
-            notify: 0
         }
     }
 
@@ -82,7 +82,7 @@ class editShipper extends Component {
                 },
             );
             if (response.data.success === true) {
-                this.setState({ notify: 1});
+                NotificationManager.success('Update profile success.');
                 window.scrollTo(0,0);
             } else {
                 throw new Error();
@@ -103,6 +103,7 @@ class editShipper extends Component {
                 onHandleRequests = {this.onHandleRequests}
                 onHandleLogout = {this.onHandleLogout}
             />
+            <NotificationContainer/>
                 <div className="container">
                     <div className="row">
                         <div className="col">
@@ -112,12 +113,6 @@ class editShipper extends Component {
                     <hr />
                     <div className="d-flex align-items-center justify-content-center row">
                     <div className="personal-info w-70">
-                        <div className="alert alert-info alert-dismissable">
-                            <a href="true" className="panel-close close" data-dismiss="alert">x</a>
-                            <i className="fa fa-coffee" />
-                            {this.state.notify === 1 ? "Update profile successful" :
-                            (this.state.notify === 0 ? "Please enter profile's information" : "Cannot update profile" )}
-                        </div>
                         <h3>Personal info</h3>
                         <form className="form-horizontal">
                         <div className="form-group">

@@ -75,8 +75,15 @@ class mainShipper extends Component {
     }
 
     componentDidMount() {
-        this.fetchUserData();
+        this.onHandleShowButton();
         this.openWebsocket();
+    }
+
+    onHandleShowButton = async () => {
+        await this.fetchUserData();
+        if(this.state.user.status === 1) {
+            this.setState({ isShowButtonReady: 0 });
+        }
     }
 
     onHandleLogout = () => {

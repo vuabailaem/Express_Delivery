@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import api from '../../api';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 class Login extends Component {
     constructor(props) {
@@ -20,19 +21,19 @@ class Login extends Component {
                     Authorization: localStorage.getItem('token'),
                 },
             });
-            if(response.data.data === 0){
+            if(response.data.data === "0"){
                 this.props.history.push('/admin/users');
             }
-            if(response.data.data === 1){
+            if(response.data.data === "1"){
                 this.props.history.push('/customer');
             }
-            if(response.data.data === 2){
+            if(response.data.data === "2"){
                 this.props.history.push('/shipper');
             } else {
                 throw new Error();
             }
         } catch {
-            console.log(Error);
+            console.log('Fail');
         }
     }
 
@@ -77,9 +78,12 @@ class Login extends Component {
                     }
                     default:break;
                 }
+            } else {
+                throw new Error;
             }
         } catch (err) {
-            console.log('fail');
+            NotificationManager.error('Cannot login.');
+            window.scrollTo(0,0);
         }
     }
 
@@ -90,6 +94,7 @@ class Login extends Component {
     render() {
         return (
     <div className="align-center">
+        <NotificationContainer/>
         <div className="fixCenter">
             <div className="">
                 <div className="d-flex justify-content-center row">

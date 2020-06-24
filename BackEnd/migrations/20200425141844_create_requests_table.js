@@ -11,14 +11,14 @@ exports.up = function(knex) {
         table.string('phoneReceiver', 100);
         table.string('latStart', 100);
         table.string('lngStart', 100);
-        table.integer('length',100);
+        table.float('length',100);
         table.integer('cost', 100);
         table.integer('acceptBy').unsigned();
         table.dateTime('startAt');
         table.dateTime('endAt');
         table.integer('status');
-        table.integer('starsCount', 10);
-        table.string('commend', 100);
+        table.float('starsCount', 10);
+        table.string('comment', 100);
         table.timestamps(true, true);
 
         table.foreign('customerId').references('id').inTable('customers');

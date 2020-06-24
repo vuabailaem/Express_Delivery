@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import api from '../api';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 class SignUpCustomer extends Component {
     constructor(props) {
@@ -8,7 +9,6 @@ class SignUpCustomer extends Component {
         this.state = {
             user: null,
             slcType: '2',
-            notify: 0
         };
       }
 
@@ -44,15 +44,12 @@ class SignUpCustomer extends Component {
                     { username, password, firstname, lastname, phoneNumber },
                 );
                 if (response.data.success === true) {
-                    this.setState({ notify: 1});
+                    NotificationManager.success('Update profile success.');
                     window.scrollTo(0,0);
                 }
                 if (response.data.message === "DUPLICATE USERNAME") {
-                    this.setState({ notify: 2});
+                    NotificationManager.warning('Duplicate Username.');
                     window.scrollTo(0,0);
-                }
-                else {
-                    alert('Fail')
                 }
             } else {
                 console.log('Fail');
@@ -67,6 +64,7 @@ class SignUpCustomer extends Component {
         return (
             <div>
                 <div className="container">
+                    <NotificationContainer/>
                     <div className="row">
                         <div className="col">
                         <h1>Add Shipper Information</h1>
@@ -90,13 +88,6 @@ class SignUpCustomer extends Component {
                     <hr />
                     <div className="d-flex align-items-center justify-content-center row">
                     <div className="personal-info w-70">
-                        <div className="alert alert-info alert-dismissable">
-                            <a href="true" className="panel-close close" data-dismiss="alert">x</a>
-                            <i className="fa fa-coffee" />
-                            {this.state.notify === 1 ? "Create successful" : 
-                            (this.state.notify === 0 ? "Please enter information" :
-                            (this.state.notify === 2 ? "Please enter another username" : "Cannot create" ))}
-                        </div>
                         <h3>Shipper info</h3>
                         <form className="form-horizontal">
                             <div className="form-group">
@@ -165,6 +156,13 @@ class SignUpCustomer extends Component {
                             <div className="d-flex align-items-center justify-content-center form-group">
                                 <div className="d-flex flex-wrap justify-content-center">
                                 <button
+                                    disabled={(this.state.user?.username === ''
+                                    || this.state.user?.password === ''
+                                    || this.state.user?.confirmPassword === ''
+                                    || this.state.user?.phoneNumber === ''
+                                    || this.state.user === null
+                                    )
+                                ?true:false}
                                     onClick = { this.onHandleSubmit }
                                     type="submit"
                                     className="btn btn-primary mr-3">Save Changes

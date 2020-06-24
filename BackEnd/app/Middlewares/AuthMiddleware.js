@@ -15,7 +15,7 @@ class AuthMiddleware{
         }
 
         const dataToken = jwt.verify(token, Env.APP_KEY);
-        if(dataToken.role === 1) {
+        if(dataToken.role === "1") {
             req.customer = dataToken;
         } else {
             return res.json({
@@ -38,7 +38,7 @@ class AuthMiddleware{
         }
 
         const dataToken = jwt.verify(token, Env.APP_KEY);
-        if(dataToken.role === 2) {
+        if(dataToken.role === "2") {
             req.shipper = dataToken;
         } else {
             return res.json({
@@ -61,7 +61,7 @@ class AuthMiddleware{
         }
 
         const dataToken = jwt.verify(token, Env.APP_KEY);
-        if(dataToken.role === 0) {
+        if(dataToken.role === "0") {
             req.admin = dataToken;
         } else {
             return res.json({

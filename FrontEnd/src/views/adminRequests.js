@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import api from '../api';
 import NavBar from '../components/NavBar';
 import Star from "../components/Star";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 class adminRequests extends Component {
     constructor(props) {
@@ -66,6 +67,7 @@ class adminRequests extends Component {
         });
         if(response.data.success === true){
           this.fetchRequetsData();
+          NotificationManager.success('Delete request success.');
         } else {
           throw new Error();
         }
@@ -82,6 +84,7 @@ class adminRequests extends Component {
             onHandleTypeShip = {this.onHandleTypeShip}
             onHandleLogout = {this.onHandleLogout}
           />
+          <NotificationContainer/>
             <div className="container">
             <div className="table-wrapper">
               <div className="table-title">
@@ -115,11 +118,13 @@ class adminRequests extends Component {
                         <td key="5">{request.cost}</td>
                         <td key="6">
                           <span className={ request.status === 1 ? "status text-secondary" :
-                          ( request.status === 2 ? "status text-warning" :
-                          ( request.status === 3 ? "status text-primary" : "status text-success")) }>•</span>
-                          <a>{ request.status === 1 ? "Sent" :
-                          ( request.status === 2 ? "Shipper Accepted" :
-                          ( request.status === 3 ? "Shipper Completed": "Verified")) }</a>
+                            ( request.status === 2 ? "status text-warning" :
+                            ( request.status === 3 ? "status text-primary" : 
+                            ( request.status === 5 ? "status text-secondary" : "status text-success"))) }>•</span>
+                            <a>{ request.status === 1 ? "Sent" :
+                            ( request.status === 2 ? "Shipper Accepted" :
+                            ( request.status === 3 ? "Shipper Completed" :
+                            ( request.status === 5 ? "Shipper Canceled" : "Verified"))) }</a>
                         </td>
                         <td key="7">
                             <a
