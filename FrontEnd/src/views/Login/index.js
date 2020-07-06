@@ -82,7 +82,7 @@ class Login extends Component {
                 throw new Error;
             }
         } catch (err) {
-            NotificationManager.error('Cannot login.');
+            NotificationManager.error('Cannot login.','', 2000);
             window.scrollTo(0,0);
         }
     }

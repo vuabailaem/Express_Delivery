@@ -238,6 +238,26 @@ class ShipperService {
         }
     }
 
+    async updateSocketIdOfShipper(shipperId, socketId) {
+        try {
+            let result = await this.shipperModel.query().update({socketId: socketId})
+                .where('id', shipperId);
+            if(!result) {
+                return {
+                    success: false,
+                    message: "cant not update socketId"
+                };
+            }
+            return {
+                success: true,
+                message: "update socketId success"
+            };
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
 }
 
 module.exports = new ShipperService();

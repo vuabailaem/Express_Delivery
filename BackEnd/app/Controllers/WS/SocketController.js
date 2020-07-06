@@ -74,7 +74,13 @@ const SocketController = (io) => {
         socket.on('updateSocketId', async (token) => {
             //define shipper by verify token
             const user = jwt.verify(token, Env.APP_KEY);
-            await customerService.updateSocketIdOfCustomer(user.id, socket.id);
+            await customerService.updateSocketIdOfCustomer(user.id, socket.id); 
+        });
+
+        socket.on('updateSocketIdShipper', async (token) => {
+            //define shipper by verify token
+            const user = jwt.verify(token, Env.APP_KEY);
+            result = await shipperService.updateSocketIdOfShipper(user.id, socket.id);
         });
 
         //shipper accept request
@@ -90,7 +96,7 @@ const SocketController = (io) => {
             let dataShipper = await shipperService.getData(shipper.userId);
             // console.log('shipper', shipper);
             const customer = await customerService.getData(request.customerId);
-            socket.broadcast.to(customer.data.socketId).emit('shipperAccepted', (dataShipper.data));
+            socket.broadcast.to(customer.data.socketId).emit('shipperAccepted', (dataShipper.data), (request));
         });
 
         //shipper DECLINE request
@@ -142,6 +148,28 @@ const SocketController = (io) => {
                 let requestDone = await requestService.getRequestCustomer(request.id);
                 await socket.broadcast.to(requestDone.data[0].socketId).emit('newFalse', (request));
                 await socket.broadcast.to(requestDone.data[0].socketId).emit('updateCompletedFalse', (request));
+            }
+            // set shipper free
+            await shipperService.cancelReady(shipper.userId);
+        });
+
+        //customer CANCEL request
+        socket.on('customerCancel', async ([request, token]) => {
+            const user = jwt.verify(token, Env.APP_KEY);
+            let customer = {
+                userId: user.id,
+                customerName: user.userName,
+                socketId: socket.id
+            };
+            // set request cancel
+            let result = await requestService.requestCancel(request.id);
+            // insert into notification table
+            await notificationService.insertRequestFalse(request.id);
+            // response to customer request has completed
+            if(result) {
+                // get request by ID
+                let requestDone = await requestService.getRequestShipper(request.id);
+                await socket.broadcast.to(requestDone.data[0].socketId).emit('customerCancel', (customer));
             }
             // set shipper free
             await shipperService.cancelReady(shipper.userId);

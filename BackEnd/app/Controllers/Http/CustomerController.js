@@ -75,7 +75,7 @@ router.get('/getMyNotification', (req, res, next) => {
 
 router.put('/confirmRequest', (req, res, next) => {
     const body = req.body;
-    RequestService.confirmRequest(body.requestId, body.starsCount, body.commend)
+    RequestService.confirmRequest(body.requestId, body.starsCount, body.comment)
         .then(result => {
             res.json(result);
         })

@@ -1,16 +1,30 @@
 import React, { Component } from 'react';
 import NavBar from "../components/NavBar";
 import io from 'socket.io-client';
+import ModalCancel from '../components/ModalRequestCancle';
 
 class Delivery extends Component {
     constructor(props) {
         super(props);
         this.state = {
             request: null,
+            position: null,
+            modalCancel: false,
+            customer: null,
         }
     }
     openWebsocket = () => {
         this.socket = io('http://localhost:3000');
+        const token = localStorage.getItem('token')
+        this.socket.emit('updateSocketIdShipper', token);
+        this.socket.on('customerCancel', (customer) => {
+            this.setState({modalCancel: true, customer: customer});
+        });
+    }
+
+    onCloseModal = () => {
+        this.setState({modalCancel: false});
+        this.props.history.push('/login');
     }
 
     componentDidMount() {
@@ -22,14 +36,15 @@ class Delivery extends Component {
         document.body.appendChild(script);
         this.onHandleInitRequest();
         setTimeout(()=> {
+            window.calculateAndDisplayDriverRoute(this.state.position.lat, this.state.position.lng);
             window.calculateAndDisplayRoute();
         },1000)
     }
 
     onHandleInitRequest = async () => {
-        await this.setState({request: this.props.location.state.request});
+        await this.setState({request: this.props.location.state.request, position: this.props.location.state.position});
         // window.calculateAndDisplayRoute();
-        // console.log(this.state.request);
+        // console.log(this.state.position.lat);
     }
 
     onHandleComplete = () => {
@@ -59,6 +74,11 @@ class Delivery extends Component {
             <NavBar
                 onHandleHome = {this.onHandleHome}
                 onHandleLogout = {this.onHandleLogout}
+            />
+            <ModalCancel
+                onCloseModal={this.onCloseModal}
+                modalOpened={this.state.modalCancel}
+                customer={this.state.customer}
             />
             <div className="container">
                 <div className="d-flex justify-content-center row mt-5">

@@ -167,7 +167,7 @@ class customerRequest extends Component {
                               <a>{ request.status === 1 ? "Sent" :
                               ( request.status === 2 ? "Shipper Accepted" :
                               ( request.status === 3 ? "Shipper Completed" :
-                              ( request.status === 5 ? "Shipper Canceled" : "Verified"))) }</a>
+                              ( request.status === 5 ? "Canceled" : "Verified"))) }</a>
                             </td>
                             <td key="7">
                                 <a
@@ -229,7 +229,7 @@ class customerRequest extends Component {
                       {!!this.state.request?.starsCount === true
                       ? <Star starsCount={this.state.request?.starsCount} />
                       : "No voted yet" }</p>
-                      <p className="col-lg control-label"><strong>Comment: </strong>{this.state.request?.commend}</p>
+                      <p className="col-lg control-label"><strong>Comment: </strong>{this.state.request?.comment}</p>
                     </> :
                     <p className="col-lg control-label"><strong>Pending shipper response</strong></p>)}
                   </div>

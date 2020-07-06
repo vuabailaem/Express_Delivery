@@ -82,7 +82,7 @@ class editCustomer extends Component {
                 },
             );
             if (response.data.success === true) {
-                NotificationManager.success('Update profile success.');
+                NotificationManager.success('Update profile success.','', 2000);
                 window.scrollTo(0,0);
             } else {
                 throw new Error();

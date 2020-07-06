@@ -44,11 +44,11 @@ class SignUpCustomer extends Component {
                     { username, password, firstname, lastname, phoneNumber },
                 );
                 if (response.data.success === true) {
-                    NotificationManager.success('Update profile success.');
+                    NotificationManager.success('Update profile success.','', 2000);
                     window.scrollTo(0,0);
                 }
                 if (response.data.message === "DUPLICATE USERNAME") {
-                    NotificationManager.warning('Duplicate Username.');
+                    NotificationManager.warning('Duplicate Username.','', 2000);
                     window.scrollTo(0,0);
                 }
             } else {

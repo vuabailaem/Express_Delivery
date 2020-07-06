@@ -1,4 +1,5 @@
 import React, { useState} from "react";
+import {withRouter} from 'react-router-dom'
 
 const ModalRequestCancle = (props) => {
     return(
@@ -15,7 +16,9 @@ const ModalRequestCancle = (props) => {
                     </button>
                   </div>
                   <div className="modal-body">
-                    <h6><strong>Shipper's Name: </strong>{props.dataShipper?.firstname} {props.dataShipper?.lastname}</h6>
+                    {props.location?.pathname.split('/').slice(0,2).join('') === "customer" ?
+                      <><h6><strong>Shipper's Name: </strong>{props.dataShipper?.firstname} {props.dataShipper?.lastname}</h6></> :
+                      <><h6><strong>Customer's Name: </strong>{props.customer?.customerName}</h6></>}
                   </div>
                   <div className="modal-footer">
                     <button className="btn btn-secondary" onClick={ props.onCloseModal } >Close</button>

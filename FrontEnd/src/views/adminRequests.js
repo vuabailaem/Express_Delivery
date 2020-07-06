@@ -67,7 +67,7 @@ class adminRequests extends Component {
         });
         if(response.data.success === true){
           this.fetchRequetsData();
-          NotificationManager.success('Delete request success.');
+          NotificationManager.success('Delete request success.','', 2000);
         } else {
           throw new Error();
         }
@@ -124,7 +124,7 @@ class adminRequests extends Component {
                             <a>{ request.status === 1 ? "Sent" :
                             ( request.status === 2 ? "Shipper Accepted" :
                             ( request.status === 3 ? "Shipper Completed" :
-                            ( request.status === 5 ? "Shipper Canceled" : "Verified"))) }</a>
+                            ( request.status === 5 ? "Canceled" : "Verified"))) }</a>
                         </td>
                         <td key="7">
                             <a
@@ -175,7 +175,7 @@ class adminRequests extends Component {
                     <p className="col-lg control-label"><strong>Time of complete: </strong>Uncomplete</p> }
                     <p className="col-lg control-label"><strong>Last time of updated: </strong>{new Date(this.state.request?.updated_at).toLocaleString()}</p>
                     <p className="col-lg control-label"><strong>Star Rate: </strong>{!!this.state.request?.starsCount === true ? <Star starsCount={this.state.request?.starsCount} /> : "No voted yet" }</p>
-                    <p className="col-lg control-label"><strong>Comment: </strong>{this.state.request?.commend}</p>
+                    <p className="col-lg control-label"><strong>Comment: </strong>{this.state.request?.comment}</p>
                   </div>
                   <div className="modal-footer">
                     <button className="btn btn-secondary" onClick={ this.onCloseModal } >Close</button>

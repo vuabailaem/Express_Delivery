@@ -94,12 +94,12 @@ class mainCustomer extends Component {
             if (response.data.success === true) {
                 this.setState({ notify: 1});
                 window.scrollTo(0,0);
-                NotificationManager.success('Update successful.');
+                NotificationManager.success('Update successful.','', 2000);
             } else {
-                NotificationManager.error('Cannot Update profile.');
+                NotificationManager.error('Cannot Update profile.','', 2000);
             }
         } else {
-            NotificationManager.error('Password not match.');
+            NotificationManager.error('Password not match.','', 2000);
         }
     }
 

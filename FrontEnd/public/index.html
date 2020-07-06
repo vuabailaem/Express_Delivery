@@ -44,14 +44,20 @@
     -->
     
     <script>
+      var markers = []
+      var marker_drivers = []
+      var getItem = false
       function initMap() {
         window.directionsService = new window.google.maps.DirectionsService();
         window.directionsRenderer = new window.google.maps.DirectionsRenderer();
-        var map = new window.google.maps.Map(document.getElementById('map'), {
+        window.directionsService2 = new window.google.maps.DirectionsService();
+        window.directionsRenderer2 = new window.google.maps.DirectionsRenderer({suppressMarkers: true});
+        window.map = new window.google.maps.Map(document.getElementById('map'), {
           zoom: 13,
           center: {lat: 16.054407, lng: 108.202167}
         });
         window.directionsRenderer.setMap(map);
+        window.directionsRenderer2.setMap(map);
       }
 
       window.codeAddress = function() {
@@ -75,6 +81,61 @@
         }
       }
 
+      window.calculateAndDisplayDriverRoute = function(lat, lng) {
+        var driverPosition = new window.google.maps.LatLng(lat, lng);
+        window.directionsService.route(
+          {
+            origin: driverPosition,
+            destination: document.getElementById('start').value,
+            travelMode: 'DRIVING'
+          },
+          function(response, status) {
+            var icons = {
+              start: new google.maps.MarkerImage(
+              // URL
+              'http://maps.google.com/mapfiles/kml/shapes/motorcycling_maps.png',
+              // (width,height)
+              new google.maps.Size( 44, 32 ),
+              // The origin point (x,y)
+              new google.maps.Point( 0, 0 ),
+              // The anchor point (x,y)
+              new google.maps.Point( 22, 32 )
+              ),
+              end: new google.maps.MarkerImage(
+              // URL
+              '',
+              // (width,height)
+              new google.maps.Size( 44, 32 ),
+              // The origin point (x,y)
+              new google.maps.Point( 0, 0 ),
+              // The anchor point (x,y)
+              new google.maps.Point( 22, 32 )
+              )
+            };
+            if (status === 'OK') {
+              window.directionsRenderer2.setDirections(response);
+              var leg = response.routes[ 0 ].legs[ 0 ];
+              // for (var i = 0; i < marker_drivers.length; i++) {
+              //   marker_drivers[i].setMap(null);
+              // }
+              marker_drivers = []
+              makeMarker( leg.start_location, icons.start, "start" );
+              makeMarker( leg.end_location, icons.end, 'destination' );
+              
+            } else {
+              window.alert('Directions request failed due to ' + status);
+            }
+            function makeMarker( position, icon, title ) {
+              marker_drivers.push(new window.google.maps.Marker({
+                  position: position,
+                  map: window.map,
+                  icon: icon,
+                  title: title
+                }));
+              }
+          });
+        }
+
       window.calculateAndDisplayRoute = function() {
         return new Promise(function (resolve) {
           window.directionsService.route({
@@ -82,9 +143,32 @@
           destination: document.getElementById('end').value,
           travelMode: 'DRIVING'
         }, function(response, status) {
+          var icons = {
+            start: new google.maps.MarkerImage(
+            // URL
+            '',
+            // (width,height)
+            new google.maps.Size( 44, 32 ),
+            // The origin point (x,y)
+            new google.maps.Point( 0, 0 ),
+            // The anchor point (x,y)
+            new google.maps.Point( 22, 32 )
+            ),
+            end: new google.maps.MarkerImage(
+            // URL
+            '',
+            // (width,height)
+            new google.maps.Size( 44, 32 ),
+            // The origin point (x,y)
+            new google.maps.Point( 0, 0 ),
+            // The anchor point (x,y)
+            new google.maps.Point( 22, 32 )
+            )
+          };
           if (status === 'OK') {
             window.directionsRenderer.setDirections(response);
             var route = response.routes[0];
+            var leg = response.routes[ 0 ].legs[ 0 ];
             var summaryPanel = document.getElementById('directions-panel');
             window.length = 0;
             summaryPanel.innerHTML = '';
@@ -98,8 +182,19 @@
               summaryPanel.innerHTML += route.legs[i].distance.value/1000 + ' km';
               window.length = (route.legs[i].distance.value/1000);
             }
+            markers = []
+              makeMarker( leg.start_location, icons.start, "start" );
+              makeMarker( leg.end_location, icons.end, 'destination' );
           } else {
             // window.alert('Directions request failed due to ' + status);
+          }
+          function makeMarker( position, icon, title ) {
+            markers.push(new window.google.maps.Marker({
+              position: position,
+              map: window.map,
+              icon: icon,
+              title: title
+            }));
           }
           resolve({ response, status });
         })

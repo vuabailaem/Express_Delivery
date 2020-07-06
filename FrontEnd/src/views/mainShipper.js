@@ -47,25 +47,26 @@ class mainShipper extends Component {
         });
     }
 
-    getLocation = () => {
+    getLocation = () => new Promise((resolve, reject) => {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(this.savePosition);
+            navigator.geolocation.getCurrentPosition((position) => {
+                this.setState({
+                    position: { lat: position.coords.latitude, lng: position.coords.longitude }
+                });
+                resolve(position);
+            });
         } else { 
             alert("Geolocation is not supported by this browser.");
+            reject("Geolocation is not supported by this browser.");
         }
-    }
-    savePosition = (position) => {
-        this.setState({
-            position: { lat: position.coords.latitude, lng: position.coords.longitude }
-        });
-    }
+    });
 
     onHandleConfirm = () => {
         const token = localStorage.getItem('token');
         this.socket.emit('acceptRequest', [this.state.request, token]);
         this.props.history.push({
             pathname: '/shipper/delivery',
-            state: { request: this.state.request}
+            state: { request: this.state.request, position: this.state.position }
         });
     }
 
@@ -75,13 +76,16 @@ class mainShipper extends Component {
     }
 
     componentDidMount() {
-        this.onHandleShowButton();
         this.openWebsocket();
+        this.onHandleShowButton();
     }
 
     onHandleShowButton = async () => {
         await this.fetchUserData();
+        await this.getLocation();
         if(this.state.user.status === 1) {
+            const token = localStorage.getItem('token');
+            this.socket.emit('readyShip', [token, this.state.position]);
             this.setState({ isShowButtonReady: 0 });
         }
     }
@@ -102,7 +106,7 @@ class mainShipper extends Component {
     }
 
     onhandleReady = async (id) => {
-        this.getLocation();
+        await this.getLocation();
         const response = await api.put('/shipper/readyShip', {id},
             {
                 headers: {
@@ -164,10 +168,10 @@ class mainShipper extends Component {
                 },
             );
             if (response.data.success === true) {
-                NotificationManager.success('Update successful', '');
+                NotificationManager.success('Update successful','', 2000);
                 window.scrollTo(0,0);
             } else {
-                NotificationManager.error('Cannot update', '');
+                NotificationManager.error('Cannot update','', 2000);
                 window.scrollTo(0,0);
             }
         } else {

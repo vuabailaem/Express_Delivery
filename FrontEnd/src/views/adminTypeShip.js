@@ -61,7 +61,7 @@ class adminTypeShip extends Component {
         const response = await api.delete('/typeShip/delete/' + id);
         if (response.data.success) {
           this.fetchTypeShipData();
-          NotificationManager.success('Delete type ship success.');
+          NotificationManager.success('Delete type ship success.','', 2000);
         } else {
           throw new Error();
         }
@@ -102,7 +102,7 @@ class adminTypeShip extends Component {
         if (response.data.success) {
           this.fetchTypeShipData();
           this.onCloseModal();
-          NotificationManager.success('Add type success.');
+          NotificationManager.success('Add type success.','', 2000);
         } else {
           throw new Error();
         }
@@ -120,7 +120,7 @@ class adminTypeShip extends Component {
         if (response.data.success) {
           this.fetchTypeShipData();
           this.onCloseModal();
-          NotificationManager.success('Update type success.');
+          NotificationManager.success('Update type success.','', 2000);
         } else {
           throw new Error();
         }

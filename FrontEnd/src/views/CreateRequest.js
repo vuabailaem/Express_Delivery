@@ -27,6 +27,7 @@ class CreateRequest extends Component {
             modalCancelOpened: false,
             modalCompleteOpened: false,
             dataShipper: null,
+            request: null,
         }
     }
     
@@ -104,10 +105,11 @@ class CreateRequest extends Component {
     openWebsocket = () => {
         this.socket = io('http://localhost:3000');
         this.socket.on('noOne', () => {
-            NotificationManager.error('No Shipper available.');
+            NotificationManager.error('No Shipper available.','', 2000);
         });
-        this.socket.on('shipperAccepted', (data) => {
-            this.setState({dataShipper: data, modalAcpOpened: true});
+        this.socket.on('shipperAccepted', (data, request) => {
+            this.setState({dataShipper: data, request: request, modalAcpOpened: true});
+            console.log(this.state.request);
         });
         this.socket.on('shipperDeclined', () => {
             this.setState({modalCancelOpened: true});
@@ -139,11 +141,17 @@ class CreateRequest extends Component {
         };
         if(dataRequest.length != 0) {
             this.socket.emit('createRequest', [token, dataRequest]);
-            NotificationManager.success('Request has been created.');
+            NotificationManager.success('Request has been created.','', 2000);
         } else {
-            NotificationManager.warning('Please enter full information.');
+            NotificationManager.warning('Please enter full information.','', 2000);
         }
         this.socket.emit('updateSocketId', token);
+    }
+
+    onHandleCancelRequest = async () => {
+        const token = localStorage.getItem('token');
+        this.socket.emit('customerCancel', [this.state.request, token]);
+        this.onCloseModal();
     }
 
     componentDidMount() {
@@ -172,8 +180,12 @@ class CreateRequest extends Component {
         event.preventDefault();
         const resultA = await window.calculateAndDisplayRoute();
         const resultB = await window.codeAddress();
+
+        // const origin = new window.google.maps.LatLng(10.12, 106.12);
+        // window.calculateAndDisplayRoute(origin)
+
         if(resultA.status !== 'OK' || !!resultB === false) {
-            NotificationManager.error('Invalid Address.');
+            NotificationManager.error('Invalid Address.','', 2000);
         }
         const lat = $("#gg-lat").val();
         const lng = $("#gg-lng").val();
@@ -204,6 +216,7 @@ class CreateRequest extends Component {
                 <NotificationContainer/>
                 <ModalAcp
                     onCloseModal={this.onCloseModal}
+                    onHandleCancelRequest={this.onHandleCancelRequest}
                     modalOpened={this.state.modalAcpOpened}
                     dataShipper={this.state.dataShipper}
                 />

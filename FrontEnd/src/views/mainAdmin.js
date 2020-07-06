@@ -80,7 +80,7 @@ class main extends Component {
         });
         if (response.data.success) {
           this.fetchShipperData();
-          NotificationManager.success('Delete shipper success.');
+          NotificationManager.success('Delete shipper success.','', 2000);
         } else {
           throw new Error();
         }
@@ -97,7 +97,7 @@ class main extends Component {
           },
         });
         if (response.data.success) {
-          NotificationManager.success('Delete customer success.');
+          NotificationManager.success('Delete customer success.','', 2000);
           this.fetchCustomerData();
         } else {
           throw new Error();

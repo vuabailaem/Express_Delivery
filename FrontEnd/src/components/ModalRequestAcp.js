@@ -1,4 +1,5 @@
 import React, { useState} from "react";
+import Star from "../components/Star";
 
 const ModalRequestAcp = (props) => {
     return(
@@ -17,9 +18,11 @@ const ModalRequestAcp = (props) => {
                   <div className="modal-body">
                     <h6><strong>Shipper's Name: </strong>{props.dataShipper?.firstname} {props.dataShipper?.lastname}</h6>
                     <h6><strong>Shipper's PhoneNumber: </strong>{props.dataShipper?.phoneNumber}</h6>
+                    <h6><strong>Shipper's Star: </strong><Star starsCount={props.dataShipper?.starsCount} /></h6>
                   </div>
                   <div className="modal-footer">
-                    <button className="btn btn-secondary" onClick={ props.onCloseModal } >Close</button>
+                    <button className="btn btn-primary" onClick={ props.onCloseModal } >Accept</button>
+                    <button className="btn btn-secondary" onClick={ props.onHandleCancelRequest } >Cancel</button>
                   </div>
                 </div>
               </div>

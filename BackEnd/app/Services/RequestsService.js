@@ -168,6 +168,28 @@ class RequestService {
         }
     }
 
+    async getRequestShipper(id) {
+        try {
+            let result = await this.requestsModel.query()
+                .select('requests.id', 'shippers.socketId', 'shippers.id')
+                .join('shippers', 'requests.acceptBy', 'shippers.id')
+                .where('requests.id', id);
+            if (!result) {
+                return {
+                    success: false,
+                    message: 'cant not get shipper request data '+id
+                }
+            }
+            return {
+                success: true,
+                data: result
+            }
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
     async shipperAccept(shipperId, requestId) {
         try {
             const date = new Date();
@@ -197,10 +219,10 @@ class RequestService {
         }
     }
 
-    async confirmRequest(requestId, starsCount, commend) {
+    async confirmRequest(requestId, starsCount, comment) {
         try {
             let result = await this.requestsModel.query()
-                        .update({status: 4, starsCount, commend})
+                        .update({status: 4, starsCount, comment})
                         .where({id: requestId});
             let shipper = await this.shippersModel.query()
                         .select('shippers.*', 'requests.acceptBy')
